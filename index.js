@@ -189,37 +189,12 @@ app.delete("/properties/delete/:id", (req,res) => {
     }
     let len = properties.length;
     properties = properties.filter(property => !(property.id == userID));
-    // for(var k = 0; k <users.length; k++) {
-    //     const aUser = users[k];
-    //     //two equal signs because not the same type (one number, one string)
-    //     if(aUser.id == userID){ 
-    //         return res.status(200).json(aUser);
-    //     }
-    // }
+    
     if (properties.length < len){
         return res.status(200).json({message: "User deleted."});
     }
 
     return res.status(404).json({message: "User not found."});
-    // const propertyID = req.params.id;
-
-
-    // if(!propertyID){
-    //     return res.status(400).json({message: "Please pass in a userID"});
-    // }
-
-    // // const numberUserId= parseInt(propertyID);
-    // // console.log(numberUserId);
-    // if(isNaN(propertyID)){
-    //     return res.status(400).json({message: "Expecting an integer."});
-    // }
-
-    
-
-
-    // return res.status(404).json({message: "Property not found."});
-    
-    
 
 });
 
@@ -291,7 +266,7 @@ app.post("/properties/:id/bookings", (req, res) => {
         dateFrom: bodyDateFrom,
         dateTo: bodyDateTo,
         userId: bodyUserID,
-        propertyID: req.params.id,
+        propertyID: parseInt(req.params.id),
         status: "NEW"
     };
 
@@ -305,6 +280,10 @@ app.post("/properties/:id/bookings", (req, res) => {
 //Getting Booking Requests by ID
 //
 app.get("/properties/:id/bookings", (req, res) => {
+    const propertyId = req.params.id;
+
+    let propBookRequests = bookingRequests.filter(bookingRequest => (bookingRequest.propertyID == propertyId));
+    
 
 });
 
