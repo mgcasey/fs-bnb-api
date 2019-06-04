@@ -283,7 +283,13 @@ app.get("/properties/:id/bookings", (req, res) => {
     const propertyId = req.params.id;
 
     let propBookRequests = bookingRequests.filter(bookingRequest => (bookingRequest.propertyID == propertyId));
-    
+
+    if(!propBookRequests){
+        return res.status(404).json({message: "No bookings found."});
+    }
+    else{
+        res.json(propBookRequests);
+    }
 
 });
 
