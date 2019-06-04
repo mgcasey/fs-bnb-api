@@ -4,12 +4,14 @@ const express = require("express");
 
 const app = express();
 
-app.use(expres.json());
+app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 var users = new Array();
 
 var properties = new Array();
+let countUser = 0;
+let countProp = 0;
 
 ///////////USERS:
 
@@ -24,6 +26,7 @@ app.post("/users", (req, res) => {
     const bodyPassword = user.password;
 
     var errors = [];
+    
     if (!bodyEmail) {
         errors.push({message: "Invalid email."});
     }
@@ -52,15 +55,16 @@ app.post("/users", (req, res) => {
     if(foundUser){
         return res.status(400).json({message: "User exists with that email"});
     }
-    count++;
+    
 
     var newUser = {
-        id: (count + 1).toString(),
+        id: (countUser + 1),
         firstname: bodyFirstname,
         lastname: bodyLastname,
         email: bodyEmail,
         password: bodyPassword
     };
+    countUser++;
 
     users.push(newUser);
     res.json(newUser);
@@ -119,6 +123,7 @@ app.post("/properties", (req, res) => {
     const bodyImageUrl = property.imageUrl;
     const bodyPrice = property.price;
 
+
     var errors = [];
     if (!bodyName) {
         errors.push({message: "Invalid name."});
@@ -138,10 +143,10 @@ app.post("/properties", (req, res) => {
     }
     let foundProperty = null;
     properties.forEach((aProperty) => {
-        if(property.name === bodyName &&
-            property.location === bodyLocation &&
-            property.price === bodyPrice &&
-            property.imageUrl === bodyImageUrl)
+        if(aProperty.name === bodyName &&
+            aProperty.location === bodyLocation &&
+            aProperty.price === bodyPrice &&
+            aProperty.imageUrl === bodyImageUrl)
         {
             foundProperty = aProperty;
         }
@@ -150,16 +155,107 @@ app.post("/properties", (req, res) => {
     if(foundProperty){
         return res.status(400).json({message: "Property exists with this information."});
     }
-    count++;
+    
 
     var newProperty = {
-        id: (count + 1).toString(),
+        id: (countProp + 1),
         name: bodyName,
         location: bodyLocation,
         imageUrl: bodyImageUrl,
         price: bodyPrice
     };
+    countProp++;
 
-    users.push(newProperty);
+    properties.push(newProperty);
     res.json(newProperty);
+});
+
+
+//Deleting a property by id
+//Body: ID
+app.delete("/properties/delete/:id", (req,res) => {
+    const userID = req.params.id;
+
+
+    if(!userID){
+        return res.status(400).json({message: "Please pass in a userID"});
+    }
+
+    const numberUserId= parseInt(userID);
+    console.log(numberUserId);
+    if(isNaN(userID)){
+        return res.status(400).json({message: "Expecting an integer."});
+    }
+
+    // function getEqual(property){
+    //     return property.id == userID;
+    // }
+    let len = properties.length;
+    properties = properties.filter(property => !(property.id == userID));
+    // for(var k = 0; k <users.length; k++) {
+    //     const aUser = users[k];
+    //     //two equal signs because not the same type (one number, one string)
+    //     if(aUser.id == userID){ 
+    //         return res.status(200).json(aUser);
+    //     }
+    // }
+    if (properties.length < len){
+        return res.status(200).json({message: "User deleted."});
+    }
+
+    return res.status(404).json({message: "User not found."});
+    // const propertyID = req.params.id;
+
+
+    // if(!propertyID){
+    //     return res.status(400).json({message: "Please pass in a userID"});
+    // }
+
+    // // const numberUserId= parseInt(propertyID);
+    // // console.log(numberUserId);
+    // if(isNaN(propertyID)){
+    //     return res.status(400).json({message: "Expecting an integer."});
+    // }
+
+    
+
+
+    // return res.status(404).json({message: "Property not found."});
+    
+    
+
+});
+
+//Getting a property by id
+app.get("/properties/:id", (req, res) => {
+    const propertyID = req.params.id;
+
+    if(!propertyID){
+        return res.status(400).json({message: "Please pass in a userID"});
+    }
+    const numberPropID = parseInt(propertyID);
+    if(isNaN(numberPropID)){
+        return res.status(400).json({message: "Expecting an integer."});
+    }
+    
+
+    
+    console.log(properties.length);
+
+    for(var k = 0; k <properties.length; k++) {
+        // const aProperty = properties[k];
+        //two equal signs because not the same type (one number, one string)
+     
+        if(properties[k].id == propertyID){ 
+            return res.status(200).json(properties[k]);
+        }
+    }
+    return res.status(404).json({message: "Property not found."});
+});
+    
+
+
+//////////Listening
+app.listen(3000, () => {
+    console.log(`Server is running on port 3000`);
 });
