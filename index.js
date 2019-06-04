@@ -8,10 +8,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 var users = new Array();
-
 var properties = new Array();
+var bookingRequests = new Array();
 let countUser = 0;
 let countProp = 0;
+let countBookRequest = 0;
 
 ///////////USERS:
 
@@ -186,10 +187,6 @@ app.delete("/properties/delete/:id", (req,res) => {
     if(isNaN(userID)){
         return res.status(400).json({message: "Expecting an integer."});
     }
-
-    // function getEqual(property){
-    //     return property.id == userID;
-    // }
     let len = properties.length;
     properties = properties.filter(property => !(property.id == userID));
     // for(var k = 0; k <users.length; k++) {
@@ -253,7 +250,63 @@ app.get("/properties/:id", (req, res) => {
     return res.status(404).json({message: "Property not found."});
 });
     
+//Booking Requests
+//To create new booking request
+app.post("/properties/:id/bookings", (req, res) => {
+    const bookingRequest = req.body;
+    const bodyDateFrom = bookingRequest.dateFrom;
+    const bodyDateTo = bookingRequest.dateTo;
+    const bodyUserID = bookingRequest.userId;
 
+    var errors = [];
+    if (!bodyDateFrom) {
+        errors.push({message: "Invalid start date."});
+    }
+    if(!bodyDateTo){
+        errors.push({message: "Invalid end date."});
+    }
+    if(!bodyUserID){
+        errors.push({message: "Invalid user ID."});
+    }
+    if (errors.length >0) {
+        return res.status(400).json({errorMessages: errors});
+    }
+
+    let foundBookReq = null;
+    bookingRequests.forEach((aBookReq) => {
+        if(aBookReq.dateFrom === bodyDateFrom &&
+            aBookReq.location === bodyDateTo &&
+            aBookReq.price === bodyUserID)
+        {
+            foundBookReq = aBookReq;
+        }
+    });
+
+    if(foundBookReq){
+        return res.status(400).json({message: "A booking request already exists with this information."});
+    }
+
+    var newBookingRequest = {
+        id: (countBookRequest + 1),
+        dateFrom: bodyDateFrom,
+        dateTo: bodyDateTo,
+        userId: bodyUserID,
+        propertyID: req.params.id,
+        status: "NEW"
+    };
+
+    countBookRequest++;
+
+    bookingRequests.push(newBookingRequest);
+    res.json(newBookingRequest);
+});
+
+
+//Getting Booking Requests by ID
+//
+app.get("/properties/:id/bookings", (req, res) => {
+
+});
 
 //////////Listening
 app.listen(3000, () => {
