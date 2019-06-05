@@ -14,41 +14,40 @@ let countUser = 0;
 let countProp = 0;
 let countBookRequest = 0;
 
-///////////USERS:
+//////////////////////////////////////   USERS:
 
 //To create/register a new user
 //Body: first name, last name, email, and password
 //Response: Newly created user
 app.post("/users", (req, res) => {
     const user = req.body;
-    const bodyFirstname = user.firstname;
-    const bodyLastname = user.lastname;
-    const bodyEmail = user.email;
-    const bodyPassword = user.password;
+    // const bodyFirstname = user.firstname;
+    // const bodyLastname = user.lastname;
+    // const bodyEmail = user.email;
+    // const bodyPassword = user.password;
 
-    var errors = [];
+    // var errors = [];
     
-    if (!bodyEmail) {
-        errors.push({message: "Invalid email."});
-    }
-    if(!bodyPassword){
-        errors.push({message: "Invalid password."});
-    }
-    if(!bodyFirstname){
-        errors.push({message: "Invalid first name."});
-    }
-    if(!bodyLastname){
-        errors.push({message: "Invalid last name."});
-    }
+    // if (!bodyEmail) {
+    //     errors.push({message: "Invalid email."});
+    // }
+    // if(!bodyPassword){
+    //     errors.push({message: "Invalid password."});
+    // }
+    // if(!bodyFirstname){
+    //     errors.push({message: "Invalid first name."});
+    // }
+    // if(!bodyLastname){
+    //     errors.push({message: "Invalid last name."});
+    // }
 
-    if (errors.length >0) {
-        return res.status(400).json({errorMessages: errors});
-    }
+    // if (errors.length >0) {
+    //     return res.status(400).json({errorMessages: errors});
+    // }
     let foundUser = null;
     users.forEach((aUser) => {
         if(aUser.email === bodyEmail)
         {
-   
             foundUser = aUser;
         }
     });
@@ -57,17 +56,19 @@ app.post("/users", (req, res) => {
         return res.status(400).json({message: "User exists with that email"});
     }
     
+    User.createUser(newUser, (err, result) => {
+        console.log(err);
+        console.log(result);
+    });
+    // var newUser = {
+    //     firstname: bodyFirstname,
+    //     lastname: bodyLastname,
+    //     email: bodyEmail,
+    //     password: bodyPassword
+    // };
+    // countUser++;
 
-    var newUser = {
-        id: (countUser + 1),
-        firstname: bodyFirstname,
-        lastname: bodyLastname,
-        email: bodyEmail,
-        password: bodyPassword
-    };
-    countUser++;
-
-    users.push(newUser);
+    // users.push(newUser);
     res.json(newUser);
 });
 
