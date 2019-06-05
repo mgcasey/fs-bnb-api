@@ -1,26 +1,26 @@
 var mysqlConn = require("../../database");
 
-var User = function(user) {
-    this.name = user.name;
-    this.email = user.email;
-    this.password = user.password;
-    this.role = user.role;
+var Booking = function(booking) {
+    this.dateTo = booking.dateTo;
+    this.dateFrom = booking.dateFrom;
+    this.userId = booking.userId;
+    this.providerId = booking.providerId;
   };
   
-  User.getAllUsers = function(result) {
-    mysqlConn.query("Select * from user", function(err, res) {
+  Booking.getAllBookings = function(result) {
+    mysqlConn.query("Select * from booking", function(err, res) {
       if (err) {
         console.log("error: ", err);
         result(err, null);
       } else {
-        console.log("Users : ", res);
+        console.log("Bookings : ", res);
         result(null, res);
       }
     });
   };
 
-  User.getUserById = function(userId, result) {
-    mysqlConn.query("Select * from user where id = ? ", userId, function(
+  Booking.getBookingById = function(bookingId, result) {
+    mysqlConn.query("Select * from booking where id = ? ", bookingId, function(
       err,
       res
     ) {
@@ -33,9 +33,9 @@ var User = function(user) {
     });
   };
 
-  User.updateUserById = function(userId, name, email, password, role, result) {
+  Booking.updateBookingById = function(bookingId, user, result) {
     mysqlConn.query(
-      "UPDATE user SET name = ? email = ? password = ? role = ? WHERE id = ?",
+      "UPDATE booking SET name = ? email = ? password = ? role = ? WHERE id = ?",
       [name, email, password, role, userId],
       function(err, res) {
         if (err) {
@@ -48,8 +48,8 @@ var User = function(user) {
     );
   };
 
-User.createUser = function(newUser, result) {
-    mysqlConn.query("INSERT INTO user set ?", newUser, function(err, res) {
+Booking.createBooking = function(newBooking, result) {
+    mysqlConn.query("INSERT INTO booking set ?", newBooking, function(err, res) {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -60,8 +60,8 @@ User.createUser = function(newUser, result) {
     });
   };
 
-  User.removeUser = function(userId, result) {
-    mysqlConn.query("DELETE FROM user WHERE id = ?", userId, function(err, res) {
+  Booking.removeBooking = function(bookingId, result) {
+    mysqlConn.query("DELETE FROM booking WHERE id = ?", bookingId, function(err, res) {
       if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -71,5 +71,5 @@ User.createUser = function(newUser, result) {
     });
   };
 
-  module.exports = User;
+  module.exports = Booking;
 
