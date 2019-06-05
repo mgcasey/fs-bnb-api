@@ -33,7 +33,7 @@ var Provider = function(provider) {
     });
   };
 
-  Provider.updateProviderById = function(providerId, provider, result) {
+  Provider.updateProviderById = function(providerId, name, email, password, rating, result) {
     mysqlConn.query(
       "UPDATE provider SET name = ? email = ? password = ? rating = ? WHERE id = ?",
       [name, email, password, rating, providerId],

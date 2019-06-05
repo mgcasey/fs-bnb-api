@@ -267,6 +267,27 @@ app.get("/properties/get/:id", (req, res) => {
     res.json({message: "done"});
 });
 
+
+app.patch("/properties/:id", (req, res) => {
+    const propertyId = req.params.id;
+    const property = req.body;
+    const bodyLocation = property.location;
+    const bodyPrice = property.price;
+    const bodyName = property.name;
+    const bodyImageUrl = property.imageUrl;
+    const bodyProviderId = property.providerId;
+
+    Property.updatePropertyById(propertyId, bodyName, bodyPrice, bodyLocation, bodyProviderId, bodyImageUrl, (err, result) =>
+    {
+        console.log(err);
+        console.log(result);
+    });
+    if(err){
+        return res.status(400).json(err);
+    }
+    res.json({message: "Property updated."});
+});
+
 //Deleting a property by id
 //Body: ID
 app.delete("/properties/delete/:id", (req,res) => {
@@ -397,6 +418,25 @@ app.get("/bookings/get/:id", (req, res) => {
     res.json({message: "done"});
 });
 
+//------------------------------------------------NEEDS WORK------------------------------//
+app.patch("/bookings/:id", (req, res) => {
+    const bookingId = req.params.id;
+    const booking = req.body;
+    const bodyDateTo = booking.dateTo;
+    const bodyDateFrom = booking.dateFrom;
+    const bodyUserId = booking.userId;
+    const bodyProviderId = booking.providerId;
+
+    Property.updatePropertyById(bookingId, bodyDateTo, bodyDateFrom, bodyUserId, bodyProviderId, (err, result) =>
+    {
+        console.log(err);
+        console.log(result);
+    });
+    if(err){
+        return res.status(400).json(err);
+    }
+    res.json({message: "Booking updated."});
+});
 
 //Getting Booking Requests by ID
 //
@@ -454,6 +494,25 @@ app.get("/providers/get/:id", (req, res) => {
     });
     //Error?
     res.json({message: "done"});
+});
+
+app.patch("/providers/:id", (req, res) => {
+    const providerId = req.params.id;
+    const provider = req.body;
+    const bodyName= provider.name;
+    const bodyEmail = provider.email;
+    const bodyPassword= provider.password;
+    const bodyRating = provider.rating;
+
+    Property.updatePropertyById(providerId, bodyName, bodyEmail, bodyPassword, bodyRating, (err, result) =>
+    {
+        console.log(err);
+        console.log(result);
+    });
+    if(err){
+        return res.status(400).json(err);
+    }
+    res.json({message: "Provider updated."});
 });
 
 app.delete("/providers/:id", (req,res) => {

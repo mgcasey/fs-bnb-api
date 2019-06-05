@@ -35,7 +35,7 @@ var Property = function(property) {
     });
   };
 
-  Property.updatePropertyById = function(propertyID, property, result) {
+  Property.updatePropertyById = function(propertyID, name, price, location, providerId, imageUrl, result) {
     mysqlConn.query(
       "UPDATE property SET name = ? price = ? location = ? providerId = ? imageUrl = ? WHERE id = ?",
       [name, price, location, imageUrl, providerId, propertyID],
