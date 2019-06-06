@@ -141,12 +141,20 @@ app.delete("/users/:id", (req,res) => {
 //Body: email and password
 //Reponse: Logged in user
 
-//---------------------------------WHAT????-------------------------//
 //may need param
-app.post("users/authentication", (req, res) => {
+app.post("/users/authentication", (req, res) => {
     const user = req.body;
     const bodyEmail = user.email;
     const bodyPassword = user.password;
+ 
+    if(!bodyPassword) {
+        return res.status(400).json({message: "Invalid password."});
+    }
+    if(!bodyEmail) {
+        return res.status(400).json({message: "Invalid email."});
+    }
+
+
 
     User.getUserByEmail(bodyEmail, (err, result) => {
         if(err) {
