@@ -50,15 +50,16 @@ var User = function(user) {
   };
 
 User.createUser = function(newUser, result) {
-    mysqlConn.query("INSERT INTO user set ?", newUser, function(err, res) {
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-      } else {
-        console.log(res.insertId);
-        result(null, res.insertId);
-      }
-    });
+  mysqlConn.query("INSERT INTO user set ?", newUser, function(err, res) {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+    } else {
+      console.log(res.insertId);
+      result(null, res.insertId);
+    }
+  });
+
   };
 
   User.removeUser = function(userId, result) {

@@ -1,79 +1,89 @@
 const express = require("express");
+const cors = require("cors");
+const mysql = require("mysql");
+
 const User = require("./src/user/user");
 const Provider = require("./src/provider/provider");
 const Booking = require("./src/booking/booking");
 const Property = require("./src/property/property");
 
-//const constants = require("./constants");
+const config = {
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "root3306",
+    database: "fs_bnb"  //deleted role from table - watch out!
+};
+//create new connection to database
+const connection = mysql.createConnection(config);
+connection.connect();
 
 const app = express();
 
+app.use(cors());
+
+//default http wants json sent, not "send" message
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: "false"}));
+
+
+
+
+
+//const constants = require("./constants");
+
+
+// app.use(express.json());
+// app.use(express.urlencoded({extended: false}));
 
 var users = new Array();
 var properties = new Array();
 var bookingRequests = new Array();
-let countUser = 0;
-let countProp = 0;
-let countBookRequest = 0;
+
 
 //////////////////////////////////////   USERS:
 
 //To create/register a new user
 //Body: first name, last name, email, and password
 //Response: Newly created user
-app.post("/users", (req, res) => {
-    const newUser = req.body;
-    // const bodyFirstname = user.firstname;
-    // const bodyLastname = user.lastname;
-    // const bodyEmail = user.email;
-    // const bodyPassword = user.password;
+// app.post("/users", (req, res) => {
+//     const newUser = req.body;
+     
+//     User.createUser(newUser, (err, result) => {
+//         console.log(err);
+//         console.log(result);
+//     });
 
-    // var errors = [];
-    
-    // if (!bodyEmail) {
-    //     errors.push({message: "Invalid email."});
-    // }
-    // if(!bodyPassword){
-    //     errors.push({message: "Invalid password."});
-    // }
-    // if(!bodyFirstname){
-    //     errors.push({message: "Invalid first name."});
-    // }
-    // if(!bodyLastname){
-    //     errors.push({message: "Invalid last name."});
-    // }
+//     res.status(200).json(newUser);
+// });
 
-    // if (errors.length >0) {
-    //     return res.status(400).json({errorMessages: errors});
-    // }
-    // let foundUser = null;
-    // users.forEach((aUser) => {
-    //     if(aUser.email === bodyEmail)
-    //     {
-    //         foundUser = aUser;
-    //     }
-    // });
 
-    // if(foundUser){
-    //     return res.status(400).json({message: "User exists with that email"});
-    // }
-    
-    User.createUser(newUser, (err, result) => {
-        console.log(err);
+//--------------------------------????????????????????????
+app.post("/users", (req,res) => {
+    const user = req.body;
+    console.log(user);
+    connection.query("INSERT INTO user SET ?", user, (err, result) => {
+        if(err) {
+            console.log(err);
+            if (err.code == "ER_DUP_ENTRY") {
+                //print out specific alert to user that already used email/password
+                return res.status(400).json({message: err.sqlMessage});
+            }
+            else {
+                return res.status(500).json({message: "Failed to insert. Please try again."});
+            }
+        }
         console.log(result);
-    });
-    // var newUser = {
-    //     firstname: bodyFirstname,
-    //     lastname: bodyLastname,
-    //     email: bodyEmail,
-    //     password: bodyPassword
-    // };
-    // countUser++;
+        var responseUser = {
+            id: result.insertId,
+            name: user.name,
+            email: user.email,
+            password: user.password
+        };
 
-    // users.push(newUser);
-    res.status(200).json(newUser);
+        return res.status(200).json(responseUser);
+    });
+
 });
 
 app.get("/users/get/all", (req, res) => {
