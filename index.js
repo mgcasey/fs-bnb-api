@@ -106,11 +106,13 @@ app.patch("/users/:id", (req, res) => {
     {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(400).json(err);
+        }
+        return res.status(200).json({message: "User updated."});
     });
-    if(err){
-        return res.status(400).json(err);
-    }
-    res.json({message: "User updated."});
+    
+    
 });
 
 app.delete("/users/:id", (req,res) => {
@@ -275,11 +277,12 @@ app.patch("/properties/:id", (req, res) => {
     {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(400).json(err);
+        }
+        return res.status(200).json({message: "Property updated."});
     });
-    if(err){
-        return res.status(400).json(err);
-    }
-    res.json({message: "Property updated."});
+    
 });
 
 //Deleting a property by id
@@ -422,11 +425,12 @@ app.patch("/bookings/:id", (req, res) => {
     {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(400).json(err);
+        }
+        return res.status(200).json({message: "Booking updated."});
     });
-    if(err){
-        return res.status(400).json(err);
-    }
-    res.json({message: "Booking updated."});
+    
 });
 
 //Getting Booking Requests by ID
@@ -495,11 +499,12 @@ app.patch("/providers/:id", (req, res) => {
     {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(400).json(err);
+        }
+        return res.status(200).json({message: "Provider updated."});
     });
-    if(err){
-        return res.status(400).json(err);
-    }
-    res.json({message: "Provider updated."});
+    
 });
 
 app.delete("/providers/:id", (req,res) => {
@@ -514,6 +519,6 @@ app.delete("/providers/:id", (req,res) => {
 });
 
 //////////Listening
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log(`Server is running on port 3000`);
 });
