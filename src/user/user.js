@@ -33,10 +33,11 @@ var User = function(user) {
     });
   };
 
-  User.updateUserById = function(userId, name, email, password, role, result) {
+  //don't need all of the params, just delete the user = ? to ?
+  User.updateUserById = function(userId, user, result) {
     mysqlConn.query(
-      "UPDATE user SET name = ? email = ? password = ? role = ? WHERE id = ?",
-      [name, email, password, role, userId],
+      "UPDATE user SET ? WHERE id = ?",
+      [user, userId],
       function(err, res) {
         if (err) {
           console.log("error: ", err);

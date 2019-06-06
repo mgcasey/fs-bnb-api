@@ -33,10 +33,10 @@ var Booking = function(booking) {
     });
   };
 
-  Booking.updateBookingById = function(bookingId, dateTo, dateFrom, userId, providerId, result) {
+  Booking.updateBookingById = function(bookingId, booking, result) {
     mysqlConn.query(
-      "UPDATE booking SET dateTo = ? dateFrom = ? userId = ? providerId = ? WHERE id = ?",
-      [dateTo, dateFrom, userId, providerId, bookingId],
+      "UPDATE booking SET ? WHERE id = ?",
+      [booking, bookingId],
       function(err, res) {
         if (err) {
           console.log("error: ", err);

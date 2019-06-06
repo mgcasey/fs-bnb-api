@@ -73,7 +73,7 @@ app.post("/users", (req, res) => {
     // countUser++;
 
     // users.push(newUser);
-    res.json(newUser);
+    res.status(200).json(newUser);
 });
 
 app.get("/users/get/all", (req, res) => {
@@ -95,15 +95,14 @@ app.get("/users/get/:id", (req, res) => {
     res.json({message: "done"});
 });
 
+//-----------------------------------------UPDATE USER----------------------------//
+//............................need to fix the other updates.....................
 app.patch("/users/:id", (req, res) => {
     const userId = req.params.id;
     const user = req.body;
-    const bodyName = user.name;
-    const bodyEmail = user.email;
-    const bodyPassword = user.password;
-    const bodyRole = user.role;
+    
 
-    User.updateUserById(userId, bodyName, bodyEmail, bodyPassword, bodyRole, (err, result) =>
+    User.updateUserById(userId, user, (err, result) =>
     {
         console.log(err);
         console.log(result);
@@ -138,7 +137,7 @@ app.delete("/users/:id", (req,res) => {
     // }
 
     // return res.status(404).json({message: "User not found."});
-    res.json(userID);
+    res.status(200).json(userID);
 });
 
 
@@ -271,13 +270,8 @@ app.get("/properties/get/:id", (req, res) => {
 app.patch("/properties/:id", (req, res) => {
     const propertyId = req.params.id;
     const property = req.body;
-    const bodyLocation = property.location;
-    const bodyPrice = property.price;
-    const bodyName = property.name;
-    const bodyImageUrl = property.imageUrl;
-    const bodyProviderId = property.providerId;
 
-    Property.updatePropertyById(propertyId, bodyName, bodyPrice, bodyLocation, bodyProviderId, bodyImageUrl, (err, result) =>
+    Property.updatePropertyById(propertyId, property, (err, result) =>
     {
         console.log(err);
         console.log(result);
@@ -422,12 +416,9 @@ app.get("/bookings/get/:id", (req, res) => {
 app.patch("/bookings/:id", (req, res) => {
     const bookingId = req.params.id;
     const booking = req.body;
-    const bodyDateTo = booking.dateTo;
-    const bodyDateFrom = booking.dateFrom;
-    const bodyUserId = booking.userId;
-    const bodyProviderId = booking.providerId;
+    
 
-    Property.updatePropertyById(bookingId, bodyDateTo, bodyDateFrom, bodyUserId, bodyProviderId, (err, result) =>
+    Property.updatePropertyById(bookingId, booking, (err, result) =>
     {
         console.log(err);
         console.log(result);
@@ -499,12 +490,8 @@ app.get("/providers/get/:id", (req, res) => {
 app.patch("/providers/:id", (req, res) => {
     const providerId = req.params.id;
     const provider = req.body;
-    const bodyName= provider.name;
-    const bodyEmail = provider.email;
-    const bodyPassword= provider.password;
-    const bodyRating = provider.rating;
-
-    Property.updatePropertyById(providerId, bodyName, bodyEmail, bodyPassword, bodyRating, (err, result) =>
+    
+    Property.updatePropertyById(providerId, provider, (err, result) =>
     {
         console.log(err);
         console.log(result);
