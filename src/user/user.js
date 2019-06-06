@@ -33,6 +33,20 @@ var User = function(user) {
     });
   };
 
+  User.getUserByEmail = function(userEmail, result) {
+    mysqlConn.query("Select * from user where email = ? ", userEmail, function(
+      err,
+      res
+    ) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+    });
+  };
+
   //don't need all of the params, just delete the user = ? to ?
   User.updateUserById = function(userId, user, result) {
     mysqlConn.query(

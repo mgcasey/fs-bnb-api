@@ -132,23 +132,7 @@ app.delete("/users/:id", (req,res) => {
         console.log(err);
         console.log(result);
     });
-    // if(!userID){
-    //     return res.status(400).json({message: "Please pass in a userID"});
-    // }
 
-    // const numberUserId= parseInt(userID);
-    // console.log(numberUserId);
-    // if(isNaN(userID)){
-    //     return res.status(400).json({message: "Expecting an integer."});
-    // }
-    // let len = properties.length;
-    // properties = properties.filter(property => !(property.id == userID));
-    
-    // if (properties.length < len){
-    //     return res.status(200).json({message: "User deleted."});
-    // }
-
-    // return res.status(404).json({message: "User not found."});
     res.status(200).json(userID);
 });
 
@@ -158,37 +142,24 @@ app.delete("/users/:id", (req,res) => {
 //Reponse: Logged in user
 
 //---------------------------------WHAT????-------------------------//
-
-app.post("/users/authentication", (req, res) => {
+//may need param
+app.post("users/authentication", (req, res) => {
     const user = req.body;
     const bodyEmail = user.email;
     const bodyPassword = user.password;
 
-    var errors = [];
-    if (!bodyEmail) {
-        errors.push({message: "Invalid email."});
-    }
-    if(!bodyPassword){
-        errors.push({message: "Invalid password."});
-    }
-    if (errors.length >0) {
-        return res.status(400).json({errorMessages: errors});
-    }
-
-    let foundUser = null;
-    users.forEach((aUser) => {
-        if(aUser.email === bodyEmail &&
-            aUser.password === bodyPassword)
-        {
-            foundUser = aUser;
+    User.getUserByEmail(bodyEmail, (err, result) => {
+        if(err) {
+            return res.status(400).json({message: "No user."});
         }
-    });
-
-    if(!foundUser){
-        return res.status(400).json({message: "User not found. Password or email may be incorrect."});
-    }
-
-    res.json(foundUser);
+        else {
+            if(result[0].password === bodyPassword){
+                return res.status(200).json(result);
+            }
+            return res.status(400).json({message: "Email and password do not match."});
+        }
+        
+    }); 
 });
 
 
