@@ -86,7 +86,7 @@ app.post("/users", (req,res) => {
 
 });
 
-app.get("/users/get/all", (req, res) => {
+app.get("/users/all", (req, res) => {
     User.getAllUsers((err, result) => {
         console.log(err);
         console.log(result);
@@ -95,14 +95,30 @@ app.get("/users/get/all", (req, res) => {
     res.json({message: "done"});
 });
 
-app.get("/users/get/:id", (req, res) => {
+app.get("/users/:id", (req, res) => {
     const userId = req.params.id;
     User.getUserById(userId, (err, result) => {
         console.log(err);
         console.log(result);
+              // if (err) {
+        console.log("error: ", err);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No user found for that ID."});
+        }
+        //need to disguise password, only send what need to user interface
+        const userResponse = {
+            id: result[0].id,
+            name: result[0].name,
+            email: result[0].email
+        }
+        return res.status(200).json(userResponse);
+      
     });
     //Error?
-    res.json({message: "done"});
+    //res.json({message: "done"});
 });
 
 //-----------------------------------------UPDATE USER----------------------------//
@@ -154,20 +170,45 @@ app.post("/users/authentication", (req, res) => {
         return res.status(400).json({message: "Invalid email."});
     }
 
-
-
     User.getUserByEmail(bodyEmail, (err, result) => {
         if(err) {
             return res.status(400).json({message: "No user."});
         }
-        else {
-            if(result[0].password === bodyPassword){
-                return res.status(200).json(result);
-            }
+        if(result[0].password !== bodyPassword){
             return res.status(400).json({message: "Email and password do not match."});
+            
         }
         
+
+        const userResponse = {
+            id: result[0].id,
+            name: result[0].name,
+            email: result[0].email
+        }
+        return res.status(200).json(userResponse);
+
+        
     }); 
+
+    // User.getUserByEmail(bodyEmail, (err, result) => {
+    //     if(err) {
+    //         return res.status(500).json({message: "Failed to login."});
+    //     }
+    //     if(result.length === 0) {
+    //         return res.status(401).json({message: "Invalid email or password."});
+    //     }
+    //     if(result[0].password === bodyPassword){
+    //         const responseUser = {
+    //              id: result[0].id,
+    //             name: result[0].name,
+    //             email: result[0].email
+    //         };
+    //         return res.status(200).json(responseUser);
+    //     }
+    //     return res.status(400).json({message: "Email and password do not match."});
+        
+        
+    // }); 
 });
 
 
@@ -252,9 +293,26 @@ app.get("/properties/get/:id", (req, res) => {
     Property.getPropertyById(propertyId, (err, result) => {
         console.log(err);
         console.log(result);
+
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No property found for that ID."});
+        }
+        //need to disguise password, only send what need to user interface
+        const propertyResponse = {
+            id: result[0].id,
+            name: result[0].name,
+            location: result[0].location,
+            price: result[0].price,
+            imageUrl: result[0].imageUrl,
+            providerId: result[0].providerId
+        }
+        return res.status(200).json(propertyResponse);
+
     });
-    //Error?
-    res.json({message: "done"});
+
 });
 
 
@@ -334,50 +392,8 @@ app.get("/properties/:id", (req, res) => {
 //To create new booking request
 app.post("/properties/:id/bookings", (req, res) => {
     const newBooking = req.body;
-    // const bodyDateFrom = bookingRequest.dateFrom;
-    // const bodyDateTo = bookingRequest.dateTo;
-    // const bodyUserID = bookingRequest.userId;
-
-    // var errors = [];
-    // if (!bodyDateFrom) {
-    //     errors.push({message: "Invalid start date."});
-    // }
-    // if(!bodyDateTo){
-    //     errors.push({message: "Invalid end date."});
-    // }
-    // if(!bodyUserID){
-    //     errors.push({message: "Invalid user ID."});
-    // }
-    // if (errors.length >0) {
-    //     return res.status(400).json({errorMessages: errors});
-    // }
-
-    // let foundBookReq = null;
-    // bookingRequests.forEach((aBookReq) => {
-    //     if(aBookReq.dateFrom === bodyDateFrom &&
-    //         aBookReq.location === bodyDateTo &&
-    //         aBookReq.price === bodyUserID)
-    //     {
-    //         foundBookReq = aBookReq;
-    //     }
-    // });
-
-    // if(foundBookReq){
-    //     return res.status(400).json({message: "A booking request already exists with this information."});
-    // }
-
-    // var newBookingRequest = {
-    //     id: (countBookRequest + 1),
-    //     dateFrom: bodyDateFrom,
-    //     dateTo: bodyDateTo,
-    //     userId: bodyUserID,
-    //     propertyID: parseInt(req.params.id),
-    //     status: "NEW"
-    // };
-
-    // countBookRequest++;
-
-    // bookingRequests.push(newBookingRequest);
+    
+   
     Booking.createBooking(newBooking, (err, result) => {
         console.log(err);
         console.log(result);
@@ -399,9 +415,23 @@ app.get("/bookings/get/:id", (req, res) => {
     Booking.getBookingById(bookingId, (err, result) => {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No booking found for that ID."});
+        }
+        //need to disguise password, only send what need to user interface
+        const bookingResponse = {
+            id: result[0].id,
+            dateTo: result[0].dateTo,
+            dateFrom: result[0].dateFrom,
+            userId: result[0].userId,
+            providerId: result[0].providerId
+        }
+        return res.status(200).json(bookingResponse);
     });
-    //Error?
-    res.json({message: "done"});
+    
 });
 
 //------------------------------------------------NEEDS WORK------------------------------//
@@ -475,9 +505,22 @@ app.get("/providers/get/:id", (req, res) => {
     Provider.getProviderById(providerId, (err, result) => {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No provider found for that ID."});
+        }
+        //need to disguise password, only send what need to user interface
+        const providerResponse = {
+            id: result[0].id,
+            name: result[0].name,
+            email: result[0].email,
+            rating: result[0].rating
+        }
+        return res.status(200).json(providerResponse);
     });
-    //Error?
-    res.json({message: "done"});
+  
 });
 
 app.patch("/providers/:id", (req, res) => {

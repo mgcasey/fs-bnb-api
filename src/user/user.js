@@ -30,6 +30,15 @@ var User = function(user) {
       } else {
         result(null, res);
       }
+      // if (err) {
+      //   console.log("error: ", err);
+      //   return res.status(500).json({message: "Failed to select."});
+      // }
+      // if(result.length === 0) {
+      //   return res.statu(404).json({message: "No user found for that ID."});
+      // }
+      //   return res.status(200)result(null, res);
+      
     });
   };
 
