@@ -33,6 +33,20 @@ var Provider = function(provider) {
     });
   };
 
+  Provider.getProviderByEmail = function(providerEmail, result) {
+    mysqlConn.query("Select * from provider where email = ? ", providerEmail, function(
+      err,
+      res
+    ) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+    });
+  };
+
   Provider.updateProviderById = function(providerId, provider, result) {
     mysqlConn.query(
       "UPDATE provider SET ? WHERE id = ?",

@@ -223,55 +223,7 @@ app.post("/users/authentication", (req, res) => {
 
 app.post("/properties", (req, res) => {
     const newProperty = req.body;
-    // const bodyName = property.name;
-    // const bodyLocation = property.location;
-    // const bodyImageUrl = property.imageUrl;
-    // const bodyPrice = property.price;
-
-
-    // var errors = [];
-    // if (!bodyName) {
-    //     errors.push({message: "Invalid name."});
-    // }
-    // if(!bodyLocation){
-    //     errors.push({message: "Invalid location."});
-    // }
-    // if(!bodyImageUrl){
-    //     errors.push({message: "Invalid image URL."});
-    // }
-    // if(!bodyPrice){
-    //     errors.push({message: "Invalid price."});
-    // }
-
-    // if (errors.length >0) {
-    //     return res.status(400).json({errorMessages: errors});
-    // }
-    // let foundProperty = null;
-    // properties.forEach((aProperty) => {
-    //     if(aProperty.name === bodyName &&
-    //         aProperty.location === bodyLocation &&
-    //         aProperty.price === bodyPrice &&
-    //         aProperty.imageUrl === bodyImageUrl)
-    //     {
-    //         foundProperty = aProperty;
-    //     }
-    // });
-
-    // if(foundProperty){
-    //     return res.status(400).json({message: "Property exists with this information."});
-    // }
-    
-
-    // var newProperty = {
-    //     id: (countProp + 1),
-    //     name: bodyName,
-    //     location: bodyLocation,
-    //     imageUrl: bodyImageUrl,
-    //     price: bodyPrice
-    // };
-    // countProp++;
-
-    // properties.push(newProperty);
+ 
     Property.createProperty(newProperty, (err, result) => {
         console.log(err);
         console.log(result);
@@ -482,13 +434,72 @@ app.delete("/properties/:id/bookings", (req,res) => {
 
 ///////////////////////////////////////Provider
 app.post("/providers", (req, res) => {
-    const newProvider = req.body;
-    Provider.createProvider(newProvider, (err, result) => {
-        console.log(err);
+    const provider = req.body;
+    console.log(provider);
+    connection.query("INSERT INTO provider SET ?", provider, (err, result) => {
+        if(err) {
+            console.log(err);
+            if (err.code == "ER_DUP_ENTRY") {
+                //print out specific alert to user that already used email/password
+                return res.status(400).json({message: err.sqlMessage});
+            }
+            else {
+                return res.status(500).json({message: "Failed to insert. Please try again."});
+            }
+        }
         console.log(result);
-    });
-    res.json(newProvider);
+        var responseProvider = {
+            id: result.insertId,
+            name: provider.name,
+            email: provider.email,
+            password: provider.password,
+            rating: provider.rating
+        };
 
+        return res.status(200).json(responseProvider);
+    });
+
+    // const newProvider = req.body;
+    // Provider.createProvider(newProvider, (err, result) => {
+    //     console.log(err);
+    //     console.log(result);
+    // });
+    // res.json(newProvider);
+
+});
+
+app.post("/providers/authentication", (req, res) => {
+    const provider = provider.body;
+    const bodyEmail = provider.email;
+    const bodyPassword = provider.password;
+ 
+    if(!bodyPassword) {
+        return res.status(400).json({message: "Invalid password."});
+    }
+    if(!bodyEmail) {
+        return res.status(400).json({message: "Invalid email."});
+    }
+
+    User.getProviderByEmail(bodyEmail, (err, result) => {
+        if(err) {
+            return res.status(400).json({message: "No provider."});
+        }
+        if(result[0].password !== bodyPassword){
+            return res.status(400).json({message: "Email and password do not match."});
+            
+        }
+        
+
+        const providerResponse = {
+            id: result[0].id,
+            name: result[0].name,
+            email: result[0].email,
+            rating: result[0].rating
+        }
+        return res.status(200).json(providerResponse);
+
+        
+    }); 
 });
 
 app.get("/providers/get/all", (req, res) => {
