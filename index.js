@@ -260,9 +260,31 @@ app.get("/properties/get/all", (req, res) => {
     Property.getAllProperties((err, result) => {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No properties found."});
+        }
+        return res.status(200).json(result);
     });
     //Error?
-    res.json({message: "done"});
+    // res.json({message: "done"});
+});
+
+app.get("/properties/getbyproviderid/:id", (req, res) => {
+    const propertyId = req.params.id;
+    Property.getPropertyByProviderId(propertyId, (err, result) => {
+        console.log(err);
+        console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No property found for this provider."});
+        }
+        return res.status(200).json(result);
+    })
 });
 
 app.get("/properties/get/:id", (req, res) => {
@@ -283,7 +305,7 @@ app.get("/properties/get/:id", (req, res) => {
             name: result[0].name,
             location: result[0].location,
             price: result[0].price,
-            imageUrl: result[0].imageUrl,
+            picture: result[0].picture,
             providerId: result[0].providerId
         }
         return res.status(200).json(propertyResponse);
@@ -318,23 +340,7 @@ app.delete("/properties/delete/:id", (req,res) => {
         console.log(result);
     });
     res.json(propertyID);
-    // if(!userID){
-    //     return res.status(400).json({message: "Please pass in a userID"});
-    // }
-
-    // const numberUserId= parseInt(userID);
-    // console.log(numberUserId);
-    // if(isNaN(userID)){
-    //     return res.status(400).json({message: "Expecting an integer."});
-    // }
-    // let len = properties.length;
-    // properties = properties.filter(property => !(property.id == userID));
-    
-    // if (properties.length < len){
-    //     return res.status(200).json({message: "User deleted."});
-    // }
-
-    // return res.status(404).json({message: "User not found."});
+   
 
 });
 

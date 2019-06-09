@@ -35,6 +35,20 @@ var Property = function(property) {
     });
   };
 
+  Property.getPropertyByProviderId = function(providerID, result) {
+    mysqlConn.query("Select * from property where providerid = ? ", providerID, function(
+      err,
+      res
+    ) {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+    });
+  };
+
   Property.updatePropertyById = function(propertyID, property, result) {
     mysqlConn.query(
       "UPDATE property SET ? WHERE id = ?",
