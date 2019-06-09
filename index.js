@@ -90,9 +90,9 @@ app.get("/users/all", (req, res) => {
     User.getAllUsers((err, result) => {
         console.log(err);
         console.log(result);
+        return res.status(200).json(result);
     });
-    //Error?
-    res.json({message: "done"});
+    
 });
 
 app.get("/users/:id", (req, res) => {
@@ -580,12 +580,12 @@ app.post("/providers/authentication", (req, res) => {
 });
 
 app.get("/providers/get/all", (req, res) => {
-    Provider.getAllProvider((err, result) => {
+    Provider.getAllProviders((err, result) => {
         console.log(err);
         console.log(result);
+        return res.status(200).json(result);
     });
-    //Error?
-    res.json({message: "done"});
+    
 });
 
 app.get("/providers/get/:id", (req, res) => {
