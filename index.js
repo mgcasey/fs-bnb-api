@@ -373,24 +373,55 @@ app.get("/properties/:id", (req, res) => {
     
 //Booking Requests
 //To create new booking request
-app.post("/properties/:id/bookings", (req, res) => {
-    const newBooking = req.body;
+// app.post("/properties/:id/bookings", (req, res) => {
+app.post("/bookings", (req, res) => {
+    const booking = req.body;
     
    
-    Booking.createBooking(newBooking, (err, result) => {
-        console.log(err);
+    // Booking.createBooking(newBooking, (err, result) => {
+    //     console.log(err);
+    //     console.log(result);
+    // });
+    // res.json(newBookingRequest);
+    connection.query("INSERT INTO booking SET ?", booking, (err, result) => {
+        if(err) {
+            console.log(err);
+            if (err.code == "ER_DUP_ENTRY") {
+                //print out specific alert to user that already used email/password
+                return res.status(400).json({message: err.sqlMessage});
+            }
+            else {
+                return res.status(500).json({message: "Failed to insert. Please try again."});
+            }
+        }
         console.log(result);
+        var responseBooking = {
+            id: result.insertId,
+            dateFrom: booking.dateFrom,
+            dateTo: booking.dateTo,
+            providerId: booking.providerId,
+            userId: booking.userId
+        };
+
+        return res.status(200).json(responseBooking);
     });
-    res.json(newBookingRequest);
 });
 
 app.get("/bookings/get/all", (req, res) => {
     Booking.getAllBookings((err, result) => {
         console.log(err);
         console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No bookings found."});
+        }
+        return res.status(200).json(result);
     });
+    
     //Error?
-    res.json({message: "done"});
+    //res.json({message: "done"});
 });
 
 app.get("/bookings/get/:id", (req, res) => {
@@ -417,7 +448,7 @@ app.get("/bookings/get/:id", (req, res) => {
     
 });
 
-//------------------------------------------------NEEDS WORK------------------------------//
+//------------------------------------------------------------------------------//
 app.patch("/bookings/:id", (req, res) => {
     const bookingId = req.params.id;
     const booking = req.body;

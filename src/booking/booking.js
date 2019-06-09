@@ -4,7 +4,7 @@ var Booking = function(booking) {
     this.dateTo = booking.dateTo;
     this.dateFrom = booking.dateFrom;
     this.userId = booking.userId;
-    this.providerId = booking.providerId;
+    this.propertyId = booking.propertyId;
   };
   
   Booking.getAllBookings = function(result) {
