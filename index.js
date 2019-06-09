@@ -469,7 +469,7 @@ app.post("/providers", (req, res) => {
 });
 
 app.post("/providers/authentication", (req, res) => {
-    const provider = provider.body;
+    const provider = req.body;
     const bodyEmail = provider.email;
     const bodyPassword = provider.password;
  
@@ -480,7 +480,7 @@ app.post("/providers/authentication", (req, res) => {
         return res.status(400).json({message: "Invalid email."});
     }
 
-    User.getProviderByEmail(bodyEmail, (err, result) => {
+    Provider.getProviderByEmail(bodyEmail, (err, result) => {
         if(err) {
             return res.status(400).json({message: "No provider."});
         }
