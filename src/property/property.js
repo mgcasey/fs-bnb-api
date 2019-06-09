@@ -5,7 +5,7 @@ var Property = function(property) {
     //this.description = property.description;
     this.location = property.location;
     this.name = property.name;
-    this.imageUrl = property.imageUrl;
+    this.picture = property.picture;
     this.providerId = property.providerId;
   };
   

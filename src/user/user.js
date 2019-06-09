@@ -4,7 +4,7 @@ var User = function(user) {
     this.name = user.name;
     this.email = user.email;
     this.password = user.password;
-    this.role = user.role;
+    //this.role = user.role;
   };
   
   User.getAllUsers = function(result) {

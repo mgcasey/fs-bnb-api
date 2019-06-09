@@ -222,13 +222,38 @@ app.post("/users/authentication", (req, res) => {
 
 
 app.post("/properties", (req, res) => {
-    const newProperty = req.body;
+    const property = req.body;
  
-    Property.createProperty(newProperty, (err, result) => {
-        console.log(err);
+    // Property.createProperty(newProperty, (err, result) => {
+    //     console.log(err);
+    //     console.log(result);
+    // });
+
+    connection.query("INSERT INTO property SET ?", property, (err, result) => {
+        if(err) {
+            console.log(err);
+            if (err.code == "ER_DUP_ENTRY") {
+                //print out specific alert to user that already used email/password
+                return res.status(400).json({message: err.sqlMessage});
+            }
+            else {
+                return res.status(500).json({message: "Failed to insert. Please try again."});
+            }
+        }
         console.log(result);
+        var responseProperty = {
+            id: result.insertId,
+            location: property.location,
+            imageUrl: property.picture,
+            name: property.name,
+            providerId: property.providerId,
+            price: property.price
+        };
+
+        return res.status(200).json(responseProperty);
     });
-    res.json(newProperty);
+
+    //res.json(newProperty);
 });
 
 app.get("/properties/get/all", (req, res) => {
