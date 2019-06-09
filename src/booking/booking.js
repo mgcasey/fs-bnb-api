@@ -33,19 +33,30 @@ var Booking = function(booking) {
     });
   };
 
-  Booking.getBookingByPropertyId = function(propertyId, result) {
-    mysqlConn.query("Select * from booking where propertyid = ?", propertyId, function(
-      err,
-      res
-    ) {
-      if (err) {
-        console.log("error: ", err);
+  Booking.getBookingbyPropertyId = function(propertyId, result) {
+    mysqlConn.query("Select * from booking where propertyid = ?", propertyId, function(err, res) 
+    {
+      if(err) {
+        console.log("error:", err);
         result(err, null);
-      } else {
+      }
+      else {
         result(null, res);
       }
     });
   };
+
+  // Booking.getBookingByPropertyId = function(propertyId, result) {
+  //   mysqlConn.query("Select * from booking where propertyid = ?", propertyId, function(err, res) 
+  //     {
+  //     if (err) {
+  //       console.log("error: ", err);
+  //       result(err, null);
+  //     } else {
+  //       result(null, res);
+  //     }
+  //   });
+  // };
 
   Booking.updateBookingById = function(bookingId, booking, result) {
     mysqlConn.query(
