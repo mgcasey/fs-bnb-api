@@ -448,6 +448,21 @@ app.get("/bookings/get/:id", (req, res) => {
     
 });
 
+app.get("/bookings/getreq/:propertyid", (req,res) => {
+    const propertyId = req.params.id;
+    Booking.getBookingByPropertyId(propertyId, (err, result) => {
+        console.log(err);
+        console.log(result);
+        if(err){
+            return res.status(500).json({message: "Failed to select."});
+        }
+        if(result.length === 0) {
+            return res.status(404).json({message: "No booking found for that ID."});
+        }
+        return res.status(200).json(result);
+    });
+});
+
 //------------------------------------------------------------------------------//
 app.patch("/bookings/:id", (req, res) => {
     const bookingId = req.params.id;
