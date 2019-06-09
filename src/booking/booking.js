@@ -33,8 +33,8 @@ var Booking = function(booking) {
     });
   };
 
-  Booking.getBookingbyPropertyId = function(propertyId, result) {
-    mysqlConn.query("Select * from booking where propertyid = ?", propertyId, function(err, res) 
+  Booking.getBookingByPropertyId = function(propertyId, result) {
+    mysqlConn.query("Select * from booking where propertyid = ? ", propertyId, function(err, res) 
     {
       if(err) {
         console.log("error:", err);
