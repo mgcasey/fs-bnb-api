@@ -58,7 +58,7 @@ var bookingRequests = new Array();
 // });
 
 
-//--------------------------------????????????????????????
+
 app.post("/users", (req,res) => {
     const user = req.body;
     console.log(user);
@@ -117,8 +117,7 @@ app.get("/users/:id", (req, res) => {
         return res.status(200).json(userResponse);
       
     });
-    //Error?
-    //res.json({message: "done"});
+    
 });
 
 //-----------------------------------------UPDATE USER----------------------------//
@@ -190,25 +189,7 @@ app.post("/users/authentication", (req, res) => {
         
     }); 
 
-    // User.getUserByEmail(bodyEmail, (err, result) => {
-    //     if(err) {
-    //         return res.status(500).json({message: "Failed to login."});
-    //     }
-    //     if(result.length === 0) {
-    //         return res.status(401).json({message: "Invalid email or password."});
-    //     }
-    //     if(result[0].password === bodyPassword){
-    //         const responseUser = {
-    //              id: result[0].id,
-    //             name: result[0].name,
-    //             email: result[0].email
-    //         };
-    //         return res.status(200).json(responseUser);
-    //     }
-    //     return res.status(400).json({message: "Email and password do not match."});
-        
-        
-    // }); 
+    
 });
 
 
@@ -268,8 +249,7 @@ app.get("/properties/get/all", (req, res) => {
         }
         return res.status(200).json(result);
     });
-    //Error?
-    // res.json({message: "done"});
+   
 });
 
 app.get("/properties/getbyproviderid/:id", (req, res) => {
@@ -437,19 +417,19 @@ app.get("/bookings/get/:id", (req, res) => {
         }
         //need to disguise password, only send what need to user interface
         const bookingResponse = {
-            id: result[0].id,
-            dateTo: result[0].dateTo,
-            dateFrom: result[0].dateFrom,
-            userId: result[0].userId,
-            providerId: result[0].providerId
+            // id: result[0].id,
+            // dateTo: result[0].dateTo,
+            // dateFrom: result[0].dateFrom,
+            // userId: result[0].userId,
+            // providerId: result[0].providerId
         }
-        return res.status(200).json(bookingResponse);
+        return res.status(200).json(result);
     });
     
 });
 
 app.get("/bookings/getreq/:propertyid", (req,res) => {
-    const propertyId = req.params.id;
+    const propertyId = req.params.propertyid;
     Booking.getBookingByPropertyId(propertyId, (err, result) => {
         console.log(err);
         console.log(result);
